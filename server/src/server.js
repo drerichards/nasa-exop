@@ -3,6 +3,14 @@ const app = require("./app");
 const PORT = process.env.PORT || 8000;
 const server = http.createServer(app); // create server and pass listener for all routes
 
-server.listen(PORT, () => {
-  console.log("Starting...");
-});
+const { loadPlanets } = require("./models/planets.models");
+
+async function initServer() {
+  await loadPlanets();
+
+  server.listen(PORT, () => {
+    console.log("Starting...");
+  });
+}
+
+initServer();

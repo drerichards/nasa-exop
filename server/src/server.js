@@ -1,15 +1,16 @@
+// file for only creation of server. separate app routing functions
 const http = require("http");
 const app = require("./app");
 const PORT = process.env.PORT || 8000;
 const server = http.createServer(app); // create server and pass listener for all routes
 
-const { loadPlanets } = require("./models/planets.models");
+const { loadPlanetsData } = require("./models/planets.model");
 
 async function initServer() {
-  await loadPlanets();
+  await loadPlanetsData();
 
   server.listen(PORT, () => {
-    console.log("Starting...");
+    console.log("Starting server...");
   });
 }
 

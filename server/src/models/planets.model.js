@@ -14,7 +14,7 @@ const isHabitablePlanet = (planet) => {
 };
 
 // streams run async. begins when required in but may not finish when planets is referenced = null pointer
-function loadPlanets(params) {
+function loadPlanetsData(params) {
   return new Promise((resolve, reject) => {
     fs.createReadStream(
       path.join(__dirname, "..", "..", "data", "kepler_data.csv")
@@ -40,7 +40,11 @@ function loadPlanets(params) {
   });
 }
 
+function getAllPlanets() {
+  return habitablePlanets;
+}
+
 module.exports = {
-  loadPlanets,
-  planets: habitablePlanets,
+  loadPlanetsData,
+  getAllPlanets,
 };

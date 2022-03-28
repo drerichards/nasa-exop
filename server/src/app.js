@@ -7,6 +7,7 @@ const app = express();
 
 const planetsRouter = require("./routes/planets/planets.router");
 const launchesRouter = require("./routes/launches/launches.router");
+const defaultRouter = require("./routes/default/default.router");
 
 // CORS //
 const whiteList = ["http://localhost:3000"];
@@ -28,13 +29,8 @@ app.use(morgan("combined"));
 app.use(express.json());
 // serves up the build files from client so that client files run from server localhost
 app.use(express.static(path.join(__dirname, "..", "public")));
-app.use(planetsRouter);
-app.use(launchesRouter);
-
-// /* is catch-all for unmatched routes that will pass route finding from server build dir to client dir using History API
-app.get("/*", (req, res) => {
-  // serves build index
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
-});
+app.use("/planets", planetsRouter);
+app.use("/launches", launchesRouter);
+app.use(defaultRouter);
 
 module.exports = app;

@@ -5,7 +5,8 @@ const {
   httpPostNewLaunch,
 } = require("./launches.controller");
 
-launchesRouter.get("/launches", httpGetAllLaunches);
-launchesRouter.post("/launches", httpPostNewLaunch);
+// '/launches' route passed in from app middleware
+launchesRouter.get("/", httpGetAllLaunches);
+launchesRouter.post("/", httpPostNewLaunch);
 
 module.exports = launchesRouter;

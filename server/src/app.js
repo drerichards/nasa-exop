@@ -7,19 +7,11 @@ const app = express();
 
 const planetsRouter = require("./routes/planets/planets.router");
 const launchesRouter = require("./routes/launches/launches.router");
-const defaultRouter = require("./routes/default/default.router");
 
 // CORS //
-const whiteList = ["http://localhost:3000"];
 app.use(
   cors({
-    origin: function (origin, cb) {
-      if (whiteList.indexOf(origin) !== -1) {
-        cb(null, true);
-      } else {
-        cb(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: "http://localhost:3000",
   })
 );
 
@@ -31,6 +23,11 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "public")));
 app.use("/planets", planetsRouter);
 app.use("/launches", launchesRouter);
-app.use(defaultRouter);
+
+// catch-all for unmatched routes to serve from client dir using History API
+app.get("/*", (req, res) => {
+  // serves build index
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+});
 
 module.exports = app;

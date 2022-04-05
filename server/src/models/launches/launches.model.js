@@ -1,30 +1,37 @@
-const launches = require("./launches.schema");
-// const launches = new Map();
+const launchesDB = require("./launches.schema");
+const planetsDB = require("../planets/planets.schema");
 let latestFlightNumber = 100;
 
 const launch = {
   flightNumber: 100,
   mission: "Kep",
   rocket: "Exp",
-  launchDate: new Date("December 22, 2030"),
-  target: "Kepler-442 b",
+  launchDate: new Date("December 22, 2070"),
+  target: "Kepler-1410 b",
   customers: ["NASA", "ZTM"],
   upcoming: true,
   success: true,
 };
 
-saveLaunchData(launch);
+saveOneLaunch(launch);
 
 function findLaunchById(id) {
-  return launches.has(id);
+  return launchesDB.has(id);
 }
 
 async function getAllLaunches() {
-  return launches.find({}, { _id: 0, __v: 0 });
+  return await launchesDB.find({}, { _id: 0, __v: 0 });
 }
 
-async function saveLaunchData(launch) {
-  return await launches.updateOne(
+async function saveOneLaunch(launch) {
+  // ensures launch isn't saved to a non existent planet
+  const planet = await planetsDB.findOne({ keplerName: launch.target });
+
+  if (!planet) {
+    throw new Error("No matching planet found");
+  }
+
+  return await launchesDB.updateOne(
     { flightNumber: launch.flightNumber },
     launch,
     { upsert: true }
@@ -34,7 +41,7 @@ async function saveLaunchData(launch) {
 function addNewLaunch(launch) {
   latestFlightNumber++;
   //includes default values
-  launches.set(
+  launchesDB.set(
     latestFlightNumber, // Map Key
     Object.assign(launch, {
       flightNumber: latestFlightNumber, // assign prop to value
@@ -46,7 +53,7 @@ function addNewLaunch(launch) {
 }
 
 function abortLaunch(id) {
-  const abortedLaunch = launches.get(id);
+  const abortedLaunch = launchesDB.get(id);
   abortedLaunch.upcoming = false;
   abortedLaunch.success = false;
   return abortedLaunch;

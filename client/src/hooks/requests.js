@@ -33,7 +33,7 @@ async function httpAbortLaunch(id) {
       method: "delete",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { ok: false };
   }
 }

@@ -1,5 +1,5 @@
-const launches = new Map();
-
+const launches = require("./launches.schema");
+// const launches = new Map();
 let latestFlightNumber = 100;
 
 const launch = {
@@ -8,19 +8,27 @@ const launch = {
   rocket: "Exp",
   launchDate: new Date("December 22, 2030"),
   target: "Kepler-442 b",
-  customer: ["NASA", "ZTM"],
+  customers: ["NASA", "ZTM"],
   upcoming: true,
   success: true,
 };
 
-launches.set(launch.flightNumber, launch);
+saveLaunchData(launch);
 
 function findLaunchById(id) {
   return launches.has(id);
 }
 
-function getAllLaunches() {
-  return Array.from(launches.values());
+async function getAllLaunches() {
+  return launches.find({}, { _id: 0, __v: 0 });
+}
+
+async function saveLaunchData(launch) {
+  return await launches.updateOne(
+    { flightNumber: launch.flightNumber },
+    launch,
+    { upsert: true }
+  );
 }
 
 function addNewLaunch(launch) {
@@ -30,7 +38,7 @@ function addNewLaunch(launch) {
     latestFlightNumber, // Map Key
     Object.assign(launch, {
       flightNumber: latestFlightNumber, // assign prop to value
-      customer: ["NASA", "ZTM"],
+      customers: ["NASA", "ZTM"],
       upcoming: true,
       success: true,
     })

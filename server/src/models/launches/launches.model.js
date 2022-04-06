@@ -41,23 +41,18 @@ async function saveOneLaunch(launch) {
 
 async function scheduleNewLaunch(launch) {
   const planet = await planetsDB.findOne({ keplerName: launch.target });
-
   if (!planet) {
     throw new Error("No matching planet found");
   }
 
   const newFlightNumber = (await getLatestFlightNumber()) + 1;
-
   const newLaunch = Object.assign(launch, {
     flightNumber: newFlightNumber,
     customers: ["NASA", "ZTM"],
     upcoming: true,
     success: true,
   });
-  console.log({ newLaunch });
-
   await saveOneLaunch(newLaunch);
-  // return res.status(201).json();
 }
 
 async function abortLaunchById(id) {
@@ -65,13 +60,7 @@ async function abortLaunchById(id) {
     { flightNumber: id },
     { upcoming: false, success: false }
   );
-
-  console.log({ abortedLaunch });
   return abortedLaunch.modifiedCount === 1;
-  // const abortedLaunch = launchesDB.get(id);
-  // abortedLaunch.upcoming = false;
-  // abortedLaunch.success = false;
-  // return abortedLaunch;
 }
 
 module.exports = {
